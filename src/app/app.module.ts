@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router'
 // import { indexRouter } from './routers/index'
 import { CadastroModule } from './cadastro/cadastro.module';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +21,7 @@ import { CadastroModule } from './cadastro/cadastro.module';
     HttpClientModule,
     ReactiveFormsModule,
     CadastroModule,
+ 
     RouterModule.forRoot([])
   ],
   providers: [],

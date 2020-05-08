@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Pessoa } from '../../objetos/entidades/Pessoa.class'
+import { CepService } from '../services/cep.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -10,6 +11,11 @@ import { Pessoa } from '../../objetos/entidades/Pessoa.class'
 })
 export class CadastroComponent implements OnInit {
   
+
+  constructor(
+    private cepService:CepService
+  ){}
+
   //MELHORAR IMPLEMENTAÇAO 
   propriedades = [
     "nome_completo", "data_nascimento",
@@ -17,6 +23,14 @@ export class CadastroComponent implements OnInit {
     ["contato", "fixo","celular","email"]
   ]
 
+  async buscarCep(){
+    let cep = this.cadastroControl.get("endereco").get("cep").value
+    console.log(cep)
+    let dadosVindoDaApi = await (await this.cepService.buscarCep(cep))
+    .subscribe(respostaApi => this.preencherEndereco(respostaApi))
+    
+    
+  }
 
 //TODO: TRANSFORMAR EM CLASSE
   cadastroControl = new FormGroup({
@@ -75,6 +89,20 @@ export class CadastroComponent implements OnInit {
   }
   ngOnInit(): void {
   }
+
+  preencherEndereco(respostaApi){
+    console.log(respostaApi)
+    this.cadastroControl.patchValue({
+      endereco:{
+        rua: respostaApi.logradouro,
+        cidade: respostaApi.localidade,
+        bairro: respostaApi.bairro,
+        complemento: respostaApi.complemento
+      }
+    })
+  }
+
+
 
 
 }
