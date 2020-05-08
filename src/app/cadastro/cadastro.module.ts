@@ -2,14 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'
 import { CadastroRouter } from '../routers/cadastro.router';
-import { DadosComponent } from './dados/dados.component'
+
+import { ReactiveFormsModule } from '@angular/forms'
+
 
 
 
 @NgModule({
-  declarations: [DadosComponent],
+  declarations: [],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     RouterModule.forChild(CadastroRouter)
   ]
 })
