@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router'
 // import { CadastroRouter } from './routers/cadastro.router'
 // import { indexRouter } from './routers/index'
 import { CadastroModule } from './cadastro/cadastro.module';
+import { GraphQLModule } from './graphql.module';
 
 
 @NgModule({
@@ -22,7 +23,9 @@ import { CadastroModule } from './cadastro/cadastro.module';
     ReactiveFormsModule,
     CadastroModule,
  
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+ 
+    GraphQLModule
   ],
   providers: [],
   bootstrap: [AppComponent]

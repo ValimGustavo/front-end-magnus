@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
-import { Pessoa } from '../../objetos/entidades/Pessoa.class'
+import { GraphQLService } from '../graphql/graphql.service'
 import { CepService } from '../services/cep.service';
+import { FormularioCadastroModel } from '../graphql/models/cadastro.formulario'
 
 @Component({
   selector: 'app-cadastro',
@@ -13,12 +13,18 @@ export class CadastroComponent implements OnInit {
   
 
   constructor(
-    private cepService:CepService
+    private cepService:CepService,
+    private  graphQLService : GraphQLService ,
   ){}
 
+
+  async fazerRequest(){
+      console.log("fazer request")
+      return await this.graphQLService.chamadaDeTesteComVariavel()
+  }
   //MELHORAR IMPLEMENTAÇAO 
   propriedades = [
-    "nome_completo", "data_nascimento",
+    ["nome", "primeiro_nome", "sobrenome"], "data_nascimento",
     ["endereco", "rua","bairro","complemento","cep","cidade"],
     ["contato", "fixo","celular","email"]
   ]
@@ -28,13 +34,14 @@ export class CadastroComponent implements OnInit {
     console.log(cep)
     let dadosVindoDaApi = await (await this.cepService.buscarCep(cep))
     .subscribe(respostaApi => this.preencherEndereco(respostaApi))
-    
-    
   }
 
 //TODO: TRANSFORMAR EM CLASSE
   cadastroControl = new FormGroup({
-    nome_completo: new FormControl(''),
+    nome: new FormGroup({
+      primeiro_nome: new FormControl(''),
+      sobrenome: new FormControl('')
+    }),
     data_nascimento: new FormControl(''),
     endereco: new FormGroup({
       rua: new FormControl(''),
@@ -52,25 +59,49 @@ export class CadastroComponent implements OnInit {
   })
 
   //TODO: REMOVER NA VERSAO FINAL
-  teste(){
+  criarObjetoComDadosDoFormulario(){
+    const dados = {}
     for(let propriedade of this.propriedades){
-      console.log("propriedade", propriedade)
       if( typeof propriedade == "object" ){
-        for(let i = 1; i < propriedade.length; i++ ){
-          console.log("propriedade", propriedade[i])
-          console.log(this.cadastroControl.get(propriedade[0]).get(propriedade[i]).value)
-        }
+        dados[propriedade[0]] = this.cadastroControl.get(propriedade[0]).value
       }
       else {
-      console.log(this.cadastroControl.get(propriedade).value)
+        let prop_e_valor = this.cadastroControl.get(propriedade).value;
+        dados[propriedade] = prop_e_valor
       }
     }
+    console.log(dados)
+    
+    const dadosModelados = {
+      contato:{
+        telefone_fixo: FormularioCadastroModel.contato.telefone_fixo(dados["contato"].fixo),
+        celular: FormularioCadastroModel.contato.celular(dados['contato'].celular),
+        email: dados["contato"].email
+      },
+      data_nascimento : FormularioCadastroModel.data_nascimento(dados['data_nascimento']),
+      nome: dados["nome"],
+      endereco: dados["endereco"]
+    }
+    return dadosModelados
+  }
+
+  salvarCadastro(){
+    console.log("salvar cadastro")
+    let formulario_preenchido = this.criarObjetoComDadosDoFormulario()
+    console.log("form", formulario_preenchido);
+    
+    const resposta = this.graphQLService.salvarBackend(formulario_preenchido)
+    console.log("resposta ", resposta);
+    
   }
 
   //TODO: REMOVER NA VERSAO FINAL
   preencher(){
     this.cadastroControl.setValue({
-      nome_completo: "nome completo",
+      nome:{
+        primeiro_nome:"primeiro nome",
+        sobrenome: "sobrenome"
+      },
       data_nascimento: "9999-03-03",
       endereco: {
         rua: "rua",
