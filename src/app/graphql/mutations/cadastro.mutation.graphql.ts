@@ -4,18 +4,23 @@ export const cadastroMutation = {
 
     cadastrar: {
         mutation: function(){
-            return gql`
-                mutation($dados:PessoaInput!) {
+            
+            const query = gql`
+               mutation($dados:PessoaInput!){
                     cadastrar(input:$dados){
                         primeiro_nome
                     }
                 }
             `
+            // console.log("query")
+            // console.dir(query)
+            return query
         },
+        
         variable: function(dados:Object){
-            console.log("dados"), dados;
-            
-            return dados
+            const enviarParaBackend = {dados: dados} 
+            // console.log("variable:", enviarParaBackend); 
+            return enviarParaBackend
         }
     }
 

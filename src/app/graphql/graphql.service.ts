@@ -32,7 +32,7 @@ export class GraphQLService {
     async chamadaDeTesteComVariavel(){
         let queryRef = this.apolloClient.watchQuery({
             query: cadastroQuery.mostrarUm.query(),
-            variables: cadastroQuery.mostrarUm.variable(1)
+            variables: cadastroQuery.mostrarUm.variable(5)
         }).valueChanges
         .subscribe(respostaBackend => {
             console.log(respostaBackend.data)
@@ -40,14 +40,15 @@ export class GraphQLService {
     }
 
     async salvarBackend(dados_formulario:Object){
-       
-       return await this.apolloClient.mutate({
+    
+       await this.apolloClient.mutate({
             mutation: cadastroMutation.cadastrar.mutation(),
-            variables: {dados: cadastroMutation.cadastrar.variable(dados_formulario) }
-        }).subscribe( respostaAPI => {
-            console.log("resposta", respostaAPI.data)
-            return respostaAPI.data
-        })
-    }
+            variables:  cadastroMutation.cadastrar.variable(dados_formulario)
+        }).subscribe( response => {
+            console.log('got data', response.data);
+          },(error) => {
+            console.log('error',error);
+          });
+        }
 
 }

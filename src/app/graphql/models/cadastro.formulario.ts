@@ -1,7 +1,4 @@
-
-
 function separarDDDdoNumero(numero_completo){
-  console.log("valor", numero_completo)
   let numero = ''
   const tam = numero_completo.length;
   for(let i = 2; i < numero_completo.length; i++)
@@ -16,7 +13,7 @@ export const FormularioCadastroModel = {
 
     data_nascimento: function(data_nascimento) {
       let data_split = data_nascimento.split('-')
-      console.log(data_split)
+    
       data_split = data_split.map( numeroString => parseInt(numeroString))
       data_nascimento = {
         ano: data_split[0],

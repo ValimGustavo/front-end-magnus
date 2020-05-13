@@ -6,7 +6,7 @@ export const cadastroQuery = {
         query: function(){
             return gql`
             query{
-                mostrarTodos(){
+                mostrarTodos{
                   id
                   primeiro_nome
                   data_nascimento

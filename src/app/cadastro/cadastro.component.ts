@@ -20,18 +20,17 @@ export class CadastroComponent implements OnInit {
 
   async fazerRequest(){
       console.log("fazer request")
-      return await this.graphQLService.chamadaDeTesteComVariavel()
+      return await this.graphQLService.chamadaDeTeste()
   }
   //MELHORAR IMPLEMENTAÇAO 
   propriedades = [
     ["nome", "primeiro_nome", "sobrenome"], "data_nascimento",
-    ["endereco", "rua","bairro","complemento","cep","cidade"],
+    ["endereco", "rua","bairro","complemento","cep"],
     ["contato", "fixo","celular","email"]
   ]
 
   async buscarCep(){
     let cep = this.cadastroControl.get("endereco").get("cep").value
-    console.log(cep)
     let dadosVindoDaApi = await (await this.cepService.buscarCep(cep))
     .subscribe(respostaApi => this.preencherEndereco(respostaApi))
   }
@@ -49,7 +48,7 @@ export class CadastroComponent implements OnInit {
       numero: new FormControl(''),
       complemento: new FormControl(''),
       cep: new FormControl(''),
-      cidade: new FormControl(''),
+      
     }),
     contato: new FormGroup({
       celular: new FormControl(''),
@@ -70,7 +69,6 @@ export class CadastroComponent implements OnInit {
         dados[propriedade] = prop_e_valor
       }
     }
-    console.log(dados)
     
     const dadosModelados = {
       contato:{
@@ -82,16 +80,15 @@ export class CadastroComponent implements OnInit {
       nome: dados["nome"],
       endereco: dados["endereco"]
     }
+
     return dadosModelados
   }
 
   salvarCadastro(){
-    console.log("salvar cadastro")
     let formulario_preenchido = this.criarObjetoComDadosDoFormulario()
-    console.log("form", formulario_preenchido);
     
     const resposta = this.graphQLService.salvarBackend(formulario_preenchido)
-    console.log("resposta ", resposta);
+    return resposta;
     
   }
 
@@ -109,7 +106,7 @@ export class CadastroComponent implements OnInit {
         numero: "315",
         complemento: "complemento",
         cep: "15632435",
-        cidade: "cidade",
+        //cidade: "cidade",
       },
       contato: {
         celular: "39685236",
@@ -126,7 +123,7 @@ export class CadastroComponent implements OnInit {
     this.cadastroControl.patchValue({
       endereco:{
         rua: respostaApi.logradouro,
-        cidade: respostaApi.localidade,
+        //cidade: respostaApi.localidade,
         bairro: respostaApi.bairro,
         complemento: respostaApi.complemento
       }
