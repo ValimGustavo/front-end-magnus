@@ -4,7 +4,7 @@ import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 
 //TODO:TRANSFORMAR EM VARIAVEL DE AMBIENTE
-const uri = 'http://localhost:4444/graphql'; // <-- add the URL of the GraphQL server here
+const uri = 'https://magnus-legio-backend.herokuapp.com/graphql'; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink) {
   return {
     link: httpLink.create({uri}),
